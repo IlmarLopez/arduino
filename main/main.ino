@@ -1,29 +1,33 @@
-/*
- WiFiEsp example: WebClient
-
- This sketch connects to google website using an ESP8266 module to
- perform a simple web search.
-
- For more details see: http://yaab-arduino.blogspot.com/p/wifiesp-example-client.html
-*/
-
 #include "WiFiEsp.h"
 
-// Emulate Serial1 on pins 6/7 if not present
+// Emulate Serial1 on pins 2/3 if not present
 #ifndef HAVE_HWSERIAL1
 #include "SoftwareSerial.h"
-SoftwareSerial Serial1(6, 7); // RX, TX
+SoftwareSerial Serial1(2, 3); // RX, TX
 #endif
+
+const int LEDPin = 13;        // pin para el LED
+const int PIRPin = 4;         // pin de entrada (for PIR sensor)
+
+int pirState = LOW;           // de inicio no hay movimiento
+int val = 0;                  // estado del pin
 
 char ssid[] = "MYHMP";            // your network SSID (name)
 char pass[] = "Hol@2020#";        // your network password
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
+
+// Configuration server
+IPAddress serverIP(192,168,1,206);
+int serverPort = 80;
 
 // Initialize the Ethernet client object
 WiFiEspClient client;
 
 void setup()
 {
+  pinMode(LEDPin, OUTPUT); 
+  pinMode(PIRPin, INPUT);
+  
   // initialize serial for debugging
   Serial.begin(115200);
   // initialize serial for ESP module
@@ -51,6 +55,13 @@ void setup()
   
   printWifiStatus();
 
+  if (client.connect(serverIP, serverPort)) {
+    Serial.println("Se pudo conectar con ip statica mensaje de prueba");
+  }
+  else {
+   Serial.println("Coneccion fallida");
+  }
+
   Serial.println();
   Serial.println("Starting connection to server...");
 }
@@ -76,10 +87,39 @@ void loop()
 
   if (WiFi.status() == WL_CONNECTED)
   {
-      Serial.println("Hola Ilmar");
+    val = digitalRead(PIRPin);
+    if (val == HIGH)   //si está activado
+    { 
+      digitalWrite(LEDPin, HIGH);  //LED ON
+      if (pirState == LOW)  //si previamente estaba apagado
+      {
+        Serial.println("Sensor activado");
+        pirState = HIGH;
+      }
+    } 
+    else // si esta desactivado
+    {
+      digitalWrite(LEDPin, LOW); // LED OFF
+      if (pirState == HIGH)  //si previamente estaba encendido
+      {
+        Serial.println("Sensor parado");
+        pirState = LOW;
+      }
+    }
+
+    client.stop();  
+
+    if (client.connect(serverIP, serverPort))
+    {
+      String json = "{temperatura :" + String(10) + ", nwater :" + String(15) +"}";
+      client.println(json); 
+      client.flush();
+    } else {
+      Serial.println("connection failed");
+    }
+    
+    delay(1000);
   }
- 
-  delay(1000);
 }
 
 
