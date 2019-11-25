@@ -18,7 +18,7 @@ int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
 // Configuration server
 IPAddress serverIP(192,168,1,206);
-int serverPort = 80;
+int serverPort = 8084;
 
 // Initialize the Ethernet client object
 WiFiEspClient client;
@@ -95,6 +95,23 @@ void loop()
       {
         Serial.println("Sensor activado");
         pirState = HIGH;
+
+        if (client.connect(serverIP, serverPort))
+        {
+          // Make a HTTP request
+          String content = "Hey, just testing a post request.";
+          client.println("POST /smart-building-server/createAlarm?teaching_id=9999 HTTP/1.1");
+          client.println("Host: 192.168.1.206:8084");
+          client.println("Accept: */*");
+          client.println("Cache-Control: no-cache");
+          client.println("Accept-Encoding: gzip, deflate");
+          client.println("Content-Length: 0");
+          client.println("Connection: keep-alive");
+          client.println("cache-control: no-cache");
+          client.println();
+          client.println(content);
+        } 
+        
       }
     } 
     else // si esta desactivado
@@ -108,17 +125,6 @@ void loop()
     }
 
     client.stop();  
-
-    if (client.connect(serverIP, serverPort))
-    {
-      String json = "{temperatura :" + String(10) + ", nwater :" + String(15) +"}";
-      client.println(json); 
-      client.flush();
-    } else {
-      Serial.println("connection failed");
-    }
-    
-    delay(1000);
   }
 }
 
