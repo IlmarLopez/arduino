@@ -6,11 +6,27 @@
 SoftwareSerial Serial1(2, 3); // RX, TX
 #endif
 
-const int LEDPin = 13;        // pin para el LED
-const int PIRPin = 4;         // pin de entrada (for PIR sensor)
+const int LEDPin8 = 8;
+const int LEDPin9 = 9;
+const int LEDPin10 = 10;
+const int LEDPin11 = 11;
 
-int pirState = LOW;           // de inicio no hay movimiento
-int val = 0;                  // estado del pin
+const int PIRPin4 = 4;
+const int PIRPin5 = 5;
+const int PIRPin6 = 6;
+const int PIRPin7 = 7;
+
+int pirState4 = LOW;           // de inicio no hay movimiento
+int val4 = 0;                  // estado del pin
+
+int pirState5 = LOW;           // de inicio no hay movimiento
+int val5 = 0;                  // estado del pin
+
+int pirState6 = LOW;           // de inicio no hay movimiento
+int val6 = 0;                  // estado del pin
+
+int pirState7 = LOW;           // de inicio no hay movimiento
+int val7 = 0;                  // estado del pin
 
 char ssid[] = "MYHMP";            // your network SSID (name)
 char pass[] = "Hol@2020#";        // your network password
@@ -25,9 +41,18 @@ WiFiEspClient client;
 
 void setup()
 {
-  pinMode(LEDPin, OUTPUT); 
-  pinMode(PIRPin, INPUT);
-  
+  pinMode(LEDPin8, OUTPUT);
+  pinMode(LEDPin9, OUTPUT);
+  pinMode(LEDPin10, OUTPUT);
+  pinMode(LEDPin11, OUTPUT);
+
+  pinMode(PIRPin4, INPUT);
+  pinMode(PIRPin5, INPUT);
+  pinMode(PIRPin6, INPUT);
+  pinMode(PIRPin7, INPUT);
+
+
+
   // initialize serial for debugging
   Serial.begin(115200);
   // initialize serial for ESP module
@@ -52,7 +77,7 @@ void setup()
 
   // you're connected now, so print out the data
   Serial.println("You're connected to the network");
-  
+
   printWifiStatus();
 
   if (client.connect(serverIP, serverPort)) {
@@ -87,20 +112,24 @@ void loop()
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    val = digitalRead(PIRPin);
-    if (val == HIGH)   //si está activado
-    { 
-      digitalWrite(LEDPin, HIGH);  //LED ON
-      if (pirState == LOW)  //si previamente estaba apagado
+    val4 = digitalRead(PIRPin4);
+    val5 = digitalRead(PIRPin5);
+    val6 = digitalRead(PIRPin6);
+    val7 = digitalRead(PIRPin7);
+
+    if (val4 == HIGH)   //si está activado
+    {
+      digitalWrite(LEDPin8, HIGH);  //LED ON
+      if (pirState4 == LOW)  //si previamente estaba apagado
       {
         Serial.println("Sensor activado");
-        pirState = HIGH;
+        pirState4 = HIGH;
 
         if (client.connect(serverIP, serverPort))
         {
           // Make a HTTP request
           String content = "Hey, just testing a post request.";
-          client.println("POST /smart-building-server/createAlarm?teaching_id=9999 HTTP/1.1");
+          client.println("POST /smart-building-server/createAlarm?teaching_id=1001 HTTP/1.1");
           client.println("Host: 192.168.1.206:8084");
           client.println("Accept: */*");
           client.println("Cache-Control: no-cache");
@@ -110,21 +139,129 @@ void loop()
           client.println("cache-control: no-cache");
           client.println();
           client.println(content);
-        } 
-        
+        }
+
       }
-    } 
+    }
     else // si esta desactivado
     {
-      digitalWrite(LEDPin, LOW); // LED OFF
-      if (pirState == HIGH)  //si previamente estaba encendido
+      digitalWrite(LEDPin8, LOW); // LED OFF
+      if (pirState4 == HIGH)  //si previamente estaba encendido
       {
         Serial.println("Sensor parado");
-        pirState = LOW;
+        pirState4 = LOW;
       }
     }
 
-    client.stop();  
+    if (val5 == HIGH)   //si está activado
+    {
+      digitalWrite(LEDPin9, HIGH);  //LED ON
+      if (pirState5 == LOW)  //si previamente estaba apagado
+      {
+        Serial.println("Sensor activado");
+        pirState5 = HIGH;
+
+        if (client.connect(serverIP, serverPort))
+        {
+          // Make a HTTP request
+          String content = "Hey, just testing a post request.";
+          client.println("POST /smart-building-server/createAlarm?teaching_id=1002 HTTP/1.1");
+          client.println("Host: 192.168.1.206:8084");
+          client.println("Accept: */*");
+          client.println("Cache-Control: no-cache");
+          client.println("Accept-Encoding: gzip, deflate");
+          client.println("Content-Length: 0");
+          client.println("Connection: keep-alive");
+          client.println("cache-control: no-cache");
+          client.println();
+          client.println(content);
+        }
+
+      }
+    }
+    else // si esta desactivado
+    {
+      digitalWrite(LEDPin9, LOW); // LED OFF
+      if (pirState5 == HIGH)  //si previamente estaba encendido
+      {
+        Serial.println("Sensor parado");
+        pirState5 = LOW;
+      }
+    }
+
+    if (val6 == HIGH)   //si está activado
+    {
+      digitalWrite(LEDPin10, HIGH);  //LED ON
+      if (pirState6 == LOW)  //si previamente estaba apagado
+      {
+        Serial.println("Sensor activado");
+        pirState6 = HIGH;
+
+        if (client.connect(serverIP, serverPort))
+        {
+          // Make a HTTP request
+          String content = "Hey, just testing a post request.";
+          client.println("POST /smart-building-server/createAlarm?teaching_id=1003 HTTP/1.1");
+          client.println("Host: 192.168.1.206:8084");
+          client.println("Accept: */*");
+          client.println("Cache-Control: no-cache");
+          client.println("Accept-Encoding: gzip, deflate");
+          client.println("Content-Length: 0");
+          client.println("Connection: keep-alive");
+          client.println("cache-control: no-cache");
+          client.println();
+          client.println(content);
+        }
+
+      }
+    }
+    else // si esta desactivado
+    {
+      digitalWrite(LEDPin10, LOW); // LED OFF
+      if (pirState6 == HIGH)  //si previamente estaba encendido
+      {
+        Serial.println("Sensor parado");
+        pirState6 = LOW;
+      }
+    }
+
+    if (val7 == HIGH)   //si está activado
+    {
+      digitalWrite(LEDPin11, HIGH);  //LED ON
+      if (pirState7 == LOW)  //si previamente estaba apagado
+      {
+        Serial.println("Sensor activado");
+        pirState7 = HIGH;
+
+        if (client.connect(serverIP, serverPort))
+        {
+          // Make a HTTP request
+          String content = "Hey, just testing a post request.";
+          client.println("POST /smart-building-server/createAlarm?teaching_id=1004 HTTP/1.1");
+          client.println("Host: 192.168.1.206:8084");
+          client.println("Accept: */*");
+          client.println("Cache-Control: no-cache");
+          client.println("Accept-Encoding: gzip, deflate");
+          client.println("Content-Length: 0");
+          client.println("Connection: keep-alive");
+          client.println("cache-control: no-cache");
+          client.println();
+          client.println(content);
+        }
+
+      }
+    }
+    else // si esta desactivado
+    {
+      digitalWrite(LEDPin11, LOW); // LED OFF
+      if (pirState7 == HIGH)  //si previamente estaba encendido
+      {
+        Serial.println("Sensor parado");
+        pirState7 = LOW;
+      }
+    }
+
+    client.stop();
   }
 }
 
