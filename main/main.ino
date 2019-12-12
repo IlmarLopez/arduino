@@ -6,11 +6,13 @@
 SoftwareSerial Serial1(2, 3); // RX, TX
 #endif
 
+// Variables para declarar los pines de los leds a usar
 const int LEDPin8 = 8;
 const int LEDPin9 = 9;
 const int LEDPin10 = 10;
 const int LEDPin11 = 11;
 
+// Variables para declarar los pines de los sensores PIR a usar
 const int PIRPin4 = 4;
 const int PIRPin5 = 5;
 const int PIRPin6 = 6;
@@ -33,8 +35,8 @@ char pass[] = "Hol@2020#";        // your network password
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
 // Configuration server
-IPAddress serverIP(192,168,1,206);
-int serverPort = 8084;
+IPAddress serverIP(192,168,1,206); // IP
+int serverPort = 8084; // Port
 
 // Initialize the Ethernet client object
 WiFiEspClient client;
@@ -50,8 +52,6 @@ void setup()
   pinMode(PIRPin5, INPUT);
   pinMode(PIRPin6, INPUT);
   pinMode(PIRPin7, INPUT);
-
-
 
   // initialize serial for debugging
   Serial.begin(115200);
@@ -100,18 +100,10 @@ void loop()
     Serial.write(c);
   }
 
-  // if the server's disconnected, stop the client
-//  if (!client.connected()) {
-//    Serial.println();
-//    Serial.println("Disconnecting from server...");
-//    client.stop();
-//
-//    // do nothing forevermore
-//    while (true);
-//  }
-
+  // status is WL_CONNECTED
   if (WiFi.status() == WL_CONNECTED)
   {
+    // Lectura dijital
     val4 = digitalRead(PIRPin4);
     val5 = digitalRead(PIRPin5);
     val6 = digitalRead(PIRPin6);
